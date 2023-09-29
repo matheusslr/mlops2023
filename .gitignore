@@ -1,5 +1,8 @@
 Python_Essentials_for_MLOps/**/dataset
 
+# vscode
+.vscode
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
