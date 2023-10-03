@@ -17,9 +17,9 @@ def read_csv(path: str):
         df_data = pd.read_csv(path)
         return df_data
     except FileNotFoundError as error:
-        print(f'File not found error: {error}')
+        raise error
     except pd.errors.EmptyDataError as error:
-        print(f'Empty data error: {error}')
+        raise error
 
 
 def extract_zip_file(zip_file_name='dataset/ml-25m.zip', dest_folder='dataset'):
@@ -37,9 +37,9 @@ def extract_zip_file(zip_file_name='dataset/ml-25m.zip', dest_folder='dataset'):
         shutil.rmtree('dataset/ml-25m')
 
     except zipfile.BadZipFile as error:
-        print(f'Error extracting the ZIP file: {error}')
+        raise error
     except FileNotFoundError as error:
-        print(f'The ZIP file was not found: {error}')
+        raise error
 
 
 def download_data(extract_path: str):
@@ -65,6 +65,6 @@ def download_data(extract_path: str):
                 print(f'Download failed. Status code: {response.getcode()}')
 
     except urllib.error.URLError as error:
-        print(f'Error while attempting to download: {error}')
+        raise error
     except FileNotFoundError as error:
-        print(f'Error creating the local file: {error}')
+        raise error
