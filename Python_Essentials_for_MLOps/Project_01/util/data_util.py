@@ -66,5 +66,3 @@ def download_data(extract_path: str):
 
     except urllib.error.URLError as error:
         raise error
-    except FileNotFoundError as error:
-        raise error
