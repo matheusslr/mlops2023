@@ -1,4 +1,9 @@
+# Datasets
 Python_Essentials_for_MLOps/**/dataset
+
+# Airflow logs
+Python_Essentials_for_MLOps/Project_02/airflow-data
+Python_Essentials_for_MLOps/Project_02/dags
 
 # vscode
 .vscode
