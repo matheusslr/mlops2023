@@ -2,9 +2,9 @@ import os
 import json
 import requests
 import xmltodict
+import pendulum
 
 from airflow.decorators import dag, task
-import pendulum
 from airflow.providers.sqlite.operators.sqlite import SqliteOperator
 from airflow.providers.sqlite.hooks.sqlite import SqliteHook
 
@@ -39,11 +39,18 @@ def podcast_summary():
 
     @task()
     def get_episodes():
-        data = requests.get(PODCAST_URL)
-        feed = xmltodict.parse(data.text)
-        episodes = feed["rss"]["channel"]["item"]
-        print(f"Found {len(episodes)} episodes.")
-        return episodes
+        try:
+            data = requests.get(PODCAST_URL)
+            feed = xmltodict.parse(data.text)
+            episodes = feed["rss"]["channel"]["item"]
+            print(f"Found {len(episodes)} episodes.")
+            return episodes
+        except requests.exceptions.HTTPError as error:
+            raise error
+        except requests.exceptions.Timeout as error:
+            raise error
+        except requests.exceptions.ConnectionError as error:
+            raise error
 
     podcast_episodes = get_episodes()
     create_database.set_downstream(podcast_episodes)
@@ -56,9 +63,15 @@ def podcast_summary():
         for episode in episodes:
             if episode["link"] not in stored_episodes["link"].values:
                 filename = f"{episode['link'].split('/')[-1]}.mp3"
-                new_episodes.append([episode["link"], episode["title"], episode["pubDate"], episode["description"], filename])
+                new_episodes.append(
+                    [episode["link"], episode["title"], episode["pubDate"],
+                     episode["description"], filename])
 
-        hook.insert_rows(table='episodes', rows=new_episodes, target_fields=["link", "title", "published", "description", "filename"])
+        hook.insert_rows(
+            table='episodes',
+            rows=new_episodes,
+            target_fields=["link", "title", "published", "description", "filename"]
+            )
         return new_episodes
 
     new_episodes = load_episodes(podcast_episodes)
@@ -73,8 +86,8 @@ def podcast_summary():
             if not os.path.exists(audio_path):
                 print(f"Downloading {filename}")
                 audio = requests.get(episode["enclosure"]["@url"])
-                with open(audio_path, "wb+") as f:
-                    f.write(audio.content)
+                with open(audio_path, "wb+") as file:
+                    file.write(audio.content)
             audio_files.append({
                 "link": episode["link"],
                 "filename": filename
@@ -84,15 +97,18 @@ def podcast_summary():
     audio_files = download_episodes(podcast_episodes)
 
     @task()
-    def speech_to_text(audio_files, new_episodes):
+    def speech_to_text():
         hook = SqliteHook(sqlite_conn_id="podcasts")
-        untranscribed_episodes = hook.get_pandas_df("SELECT * from episodes WHERE transcript IS NULL;")
+        untranscribed_episodes = hook.get_pandas_df(
+            "SELECT * from episodes" +
+            "WHERE transcript IS NULL;"
+            )
 
         model = Model(model_name="vosk-model-en-us-0.22-lgraph")
         rec = KaldiRecognizer(model, FRAME_RATE)
         rec.SetWords(True)
 
-        for index, row in untranscribed_episodes.iterrows():
+        for row in untranscribed_episodes.itertuples():
             print(f"Transcribing {row['filename']}")
             filepath = os.path.join(EPISODE_FOLDER, row["filename"])
             mp3 = AudioSegment.from_mp3(filepath)
@@ -108,9 +124,14 @@ def podcast_summary():
                 result = rec.Result()
                 text = json.loads(result)["text"]
                 transcript += text
-            hook.insert_rows(table='episodes', rows=[[row["link"], transcript]], target_fields=["link", "transcript"], replace=True)
+            hook.insert_rows(
+                table='episodes',rows=[[row["link"], transcript]],
+                target_fields=["link", "transcript"], replace=True
+                )
 
     #Uncomment this to try speech to text (may not work)
-    #speech_to_text(audio_files, new_episodes)
+    speech_to_text()
+    print(new_episodes)
+    print(audio_files)
 
-summary = podcast_summary()
+SUMMARY = podcast_summary()
