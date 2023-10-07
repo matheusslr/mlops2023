@@ -1,0 +1,5 @@
+pandas==2.0.3
+pydub==0.25.1
+pytest==7.4.2
+vosk==0.3.45
+xmltodict==0.13.0
