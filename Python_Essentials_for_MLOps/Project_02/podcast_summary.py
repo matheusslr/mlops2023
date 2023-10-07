@@ -40,7 +40,7 @@ def podcast_summary():
     @task()
     def get_episodes():
         try:
-            data = requests.get(PODCAST_URL)
+            data = requests.get(PODCAST_URL, timeout=10)
             feed = xmltodict.parse(data.text)
             episodes = feed["rss"]["channel"]["item"]
             print(f"Found {len(episodes)} episodes.")
@@ -85,9 +85,20 @@ def podcast_summary():
             audio_path = os.path.join(EPISODE_FOLDER, filename)
             if not os.path.exists(audio_path):
                 print(f"Downloading {filename}")
-                audio = requests.get(episode["enclosure"]["@url"])
-                with open(audio_path, "wb+") as file:
-                    file.write(audio.content)
+                try:
+                    audio = requests.get(episode["enclosure"]["@url"], timeout=10)
+                    with open(audio_path, "wb+") as file:
+                        file.write(audio.content)
+                except requests.exceptions.HTTPError as error:
+                    raise error
+                except requests.exceptions.Timeout as error:
+                    raise error
+                except requests.exceptions.ConnectionError as error:
+                    raise error
+                except requests.exceptions.RequestException as error:
+                    raise error
+                except (IOError, FileNotFoundError) as error:
+                    raise error
             audio_files.append({
                 "link": episode["link"],
                 "filename": filename
@@ -127,7 +138,7 @@ def podcast_summary():
             hook.insert_rows(
                 table='episodes',rows=[[row["link"], transcript]],
                 target_fields=["link", "transcript"], replace=True
-                )
+            )
 
     #Uncomment this to try speech to text (may not work)
     speech_to_text()
