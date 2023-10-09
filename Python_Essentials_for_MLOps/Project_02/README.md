@@ -6,7 +6,9 @@
 ![Github repo size](https://img.shields.io/github/repo-size/matheusslr/mlops2023)
 ![Github stars](https://img.shields.io/github/stars/matheusslr/mlops2023?style=social)
 
-![Capa do Projeto](imgs\airflow.jpg)
+<div align="center">
+    <img src="imgs/airflow.jpg">    
+</div>
 
 > Neste projeto, foi criado um pipeline de dados de quatro etapas usando o Airflow, uma popular ferramenta em Python para definir e executar pipelines de dados avançados. O pipeline fez o download de episódios de podcast e os armazenou em um banco de dados SQLite para consulta.
 
