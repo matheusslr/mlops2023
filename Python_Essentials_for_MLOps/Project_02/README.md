@@ -15,13 +15,14 @@
 Antes de executar o projeto, certifique-se de ter as seguintes dependências instaladas:
 
 - Python: 3.8+
-    - apache-airflow: 2.7.1 
+    - apache-airflow: 2.3+
     - pandas: 2.0.3
     - pydub: 0.25.1
     - pytest: 7.4.2
     - vosk: 0.3.45
     - xmltodict: 0.13.0
 - Docker
+- Sqlite3
 
 ## Como executar o projeto
 
@@ -77,5 +78,6 @@ A estrutura de pastas do projeto é organizada da seguinte maneira:
 ## Referências
 
 - [Build an Airflow Data Pipeline to Download Podcasts - Dataquest](https://github.com/dataquestio/project-walkthroughs/tree/master/podcast_summary)
+- [Sqlite3 download page](https://www.sqlite.org/download.html)
 - [Install Docker Engine](https://docs.docker.com/engine/install/)
 - [Airflow docker-compose.yml](https://airflow.apache.org/docs/apache-airflow/2.7.1/docker-compose.yaml)
