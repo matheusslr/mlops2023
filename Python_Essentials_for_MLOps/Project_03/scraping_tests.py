@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from unittest.mock import Mock, patch
-from scraping import get_html_from_url, get_match_shooting_stats
+from unittest.mock import patch
+from scraping import get_html_from_url
 
 
 def test_valid_url():
