@@ -11,11 +11,11 @@
 
 ## Sobre os projetos
 ### Projeto 01: Sistema de recomendação de filmes em Python
-Descrição: sistema interativo de recomendação de filmes
+Descrição: sistema interativo de recomendação de filmes - [link](https://github.com/matheusslr/mlops2023/tree/main/Python_Essentials_for_MLOps/Project_01)
 ### Projeto 02: Um pipeline de dados de Airflow para fazer download de podcasts
-Descrição: pipeline de dados de quatro etapas usando o Airflow
+Descrição: pipeline de dados de quatro etapas usando o Airflow - [link](https://github.com/matheusslr/mlops2023/tree/main/Python_Essentials_for_MLOps/Project_02)
 ### Projeto 03: Web Scraping de jogos de futebol da English Premier League (EPL) em Python
-Descrição: prevendo o vencedor das partidas de futebol da English Premier League (EPL)
+Descrição: prevendo o vencedor das partidas de futebol da English Premier League (EPL) - [link](https://github.com/matheusslr/mlops2023/tree/main/Python_Essentials_for_MLOps/Project_03)
 
 ## Requerimentos/Instalações
 Para executar qualquer um dos projetos mencionados acima, entre em seus respectivos diretórios e leia a seção de pre-requisitos e, posteriormente, a seção de instalação.
